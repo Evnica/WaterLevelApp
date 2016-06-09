@@ -13,6 +13,13 @@
     -fx-background-color: ghostwhite;
 }
 
+#infoPane{
+    -fx-font: 15px Calibri;
+    -fx-font-weight: bold;
+    -fx-background-image: url('../../../assets/backgr.jpg');
+    -fx-background-color: ghostwhite;
+}
+
 #stationNameTxt, #startTxt, #endTxt, #formatTxt, #timeFrameTxt{
     -fx-font: 18px Calibri;
     -fx-fill: #393939;

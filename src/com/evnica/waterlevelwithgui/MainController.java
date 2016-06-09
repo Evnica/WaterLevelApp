@@ -77,13 +77,17 @@ public class MainController
 
         //fill in station combo
         stationCombo.getItems().addAll( stationNames );
-        stationCombo.setValue( stationNames.get( 0 ));
-        // save default name and table values to report parameters
-        reportParameters.setStationName( DataStorage.getStations().get( 0 ).fullName() );
-        System.out.println("Station name in report parameters: " + DataStorage.getStations().get( 0 ).fullName());
-        reportParameters.setTableName( DataStorage.getStations().get( 0 ).place );
-        System.out.println("Table name in report parameters: " + DataStorage.getStations().get( 0 ).place);
-        // and add listener
+        if ( stationNames.size() > 0 )
+        {
+            stationCombo.setValue( stationNames.get( 0 ) );
+
+            // save default name and table values to report parameters
+            reportParameters.setStationName( DataStorage.getStations().get( 0 ).fullName() );
+            System.out.println( "Station name in report parameters: " + DataStorage.getStations().get( 0 ).fullName() );
+            reportParameters.setTableName( DataStorage.getStations().get( 0 ).place );
+            System.out.println( "Table name in report parameters: " + DataStorage.getStations().get( 0 ).place );
+            // and add listener
+        }
         stationCombo.getSelectionModel().selectedItemProperty().addListener( (obs, old, newV) -> {
             stationIndex = stationCombo.getSelectionModel().getSelectedIndex();
             System.out.println(stationIndex + " station index");

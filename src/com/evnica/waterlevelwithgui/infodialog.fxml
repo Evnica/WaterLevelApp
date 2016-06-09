@@ -4,23 +4,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="dialogPane" alignment="CENTER" gridLinesVisible="false" hgap="20"
-          minHeight="120" minWidth="300" prefHeight="135.0" prefWidth="320.0" vgap="25"
+<GridPane fx:id="infoPane" alignment="CENTER" gridLinesVisible="false" hgap="15"
+          minHeight="140" minWidth="300" prefHeight="165.0" prefWidth="320.0" vgap="25"
           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.evnica.waterlevelwithgui.InfoController">
     <padding><Insets bottom="10" left="20" right="10" top="20" /></padding>
 
     <columnConstraints>
-        <ColumnConstraints minWidth="300.0" prefWidth="320.0" />
+        <ColumnConstraints minWidth="300.0" prefWidth="320.0" halignment="CENTER" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints minHeight="30.0" prefHeight="60.0" />
+        <RowConstraints minHeight="70.0" prefHeight="90.0" />
         <RowConstraints minHeight="30.0" prefHeight="40.0" />
     </rowConstraints>
 
     <children>
         <Label fx:id="infoLabel" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <Button fx:id="infoButton" minWidth="80.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" text="Ja" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <Button fx:id="infoButton" minWidth="80.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" text="OK"
+                textAlignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="CENTER" />
     </children>
 
 </GridPane>
