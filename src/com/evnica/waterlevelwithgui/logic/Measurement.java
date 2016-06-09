@@ -9,13 +9,12 @@ import java.time.LocalTime;
  * Author: Evnica
  * Description: Contains time-value pair of water level measurement. Unit is static.
  */
-public class Measurement implements Comparable<Measurement>
+class Measurement implements Comparable<Measurement>
 {
     Double value;
     LocalTime timestamp;
-    private static final String UNIT = "cm";
 
-    public Measurement( LocalTime timestamp, Double value )
+    Measurement( LocalTime timestamp, Double value )
     {
         this.value = value;
         this.timestamp = timestamp;
@@ -26,7 +25,7 @@ public class Measurement implements Comparable<Measurement>
         return value;
     }
 
-    public LocalTime getTimestamp()
+    LocalTime getTimestamp()
     {
         return timestamp;
     }
