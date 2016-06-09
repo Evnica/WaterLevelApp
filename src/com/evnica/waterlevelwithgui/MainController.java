@@ -1,7 +1,6 @@
 package com.evnica.waterlevelwithgui;
 
-import com.evnica.waterlevelwithgui.logic.Formatter;
-import com.evnica.waterlevelwithgui.logic.ReportParameters;
+import com.evnica.waterlevelwithgui.logic.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,15 +10,22 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class MainController
 {
-    private ReportParameters reportParameters = new ReportParameters();
-    private Main main;
     @FXML
     private Button createButton;
     @FXML
@@ -38,6 +44,13 @@ public class MainController
     private DatePicker startPicker;
     @FXML
     private DatePicker endPicker;
+
+    private LocalDate startDate, endDate;
+    private LocalTime startTime, endTime;
+    private ReportParameters reportParameters = new ReportParameters();
+    private Main main;
+    private int stationIndex;
+    private List<DayMeasurement> measurements;
 
     public void setMainApp(Main main) {
         this.main = main;
@@ -60,59 +73,176 @@ public class MainController
         //GUI completion
 
         ObservableList<String> stationNames = FXCollections.observableArrayList();
-        Main.stations.forEach( station -> stationNames.add( station.fullName()));
+        DataStorage.getStations().forEach( station -> stationNames.add( station.fullName()));
 
-        //fill in station combo, save default value to report parameters and add listener
+        //fill in station combo
         stationCombo.getItems().addAll( stationNames );
         stationCombo.setValue( stationNames.get( 0 ));
-        reportParameters.setStationName( Main.stations.get( 0 ).place );
+        // save default name and table values to report parameters
+        reportParameters.setStationName( DataStorage.getStations().get( 0 ).fullName() );
+        System.out.println("Station name in report parameters: " + DataStorage.getStations().get( 0 ).fullName());
+        reportParameters.setTableName( DataStorage.getStations().get( 0 ).place );
+        System.out.println("Table name in report parameters: " + DataStorage.getStations().get( 0 ).place);
+        // and add listener
         stationCombo.getSelectionModel().selectedItemProperty().addListener( (obs, old, newV) -> {
-            int i = stationCombo.getSelectionModel().getSelectedIndex();
-            reportParameters.setStationName( Main.stations.get( i ).place );
+            stationIndex = stationCombo.getSelectionModel().getSelectedIndex();
+            System.out.println(stationIndex + " station index");
         } );
 
         //formal presence as there are no other parameters
         formatCombo.setValue( "BS2016SS" );
 
-        //
-        String now = LocalDate.now().format( Formatter.getDateFormatter() );
+        // prepare strings for date settings (in pickers)
+        LocalTime nowTime = LocalTime.now();
+
+        //settings for starting the app with pickers with current dates; as the test data is for 2015, the default date
+        // values in pickers are changed accordingly
+
+        /*LocalDate nowDate = LocalDate.now();
+        String now = nowDate.format( Formatter.getDATE_FORMATTER_ddMMyyyy() );
         int day = Integer.parseInt( now.substring( 0, 2 ) );
         int month = Integer.parseInt( now.substring( 3, 5 ) );
-        int year = Integer.parseInt( now.substring( 6 ) );
-        startPicker.setValue( LocalDate.of( year, month, day-7 ) );
-        endPicker.setValue( LocalDate.now());
+        int year = Integer.parseInt( now.substring( 6 ) );*/
 
+        //set default report parameters for start and end dates
+        String endDateParameter, startDateParameter, startTimeParameter, endTimeParameter;
 
+        /*endDateParameter = nowDate.format( Formatter.getDATE_FORMATTER_ddMMyyyy() );
+        startDateParameter = LocalDate.of( year, month, day-7 ).format( Formatter.getDATE_FORMATTER_ddMMyyyy() );
 
-        String startDate, endDate;
-        endDate = LocalDate.now().format( Formatter.getDateFormatter() );
-        startDate = LocalDate.of( year, month, day-7 ).format( Formatter.getDateFormatter() );
+        startTimeParameter = nowTime.format( Formatter.getTIME_FORMATTER_HHmm() );
+        endTimeParameter = nowTime.format( Formatter.getTIME_FORMATTER_HHmm() );*/
 
-        String startTime, endTime;
-        startTime = LocalTime.now().format( Formatter.getTimeFormatter() );
-        endTime = LocalTime.now().format( Formatter.getTimeFormatter() );
+        //set default dates
+        startDate = LocalDate.of( 2015, 1, 31 );
+        endDate = LocalDate.of( 2015, 2, 6 );
 
+        startDateParameter = Formatter.getDATE_FORMATTER_ddMMyyyy().format( startDate );
+        endDateParameter = Formatter.getDATE_FORMATTER_ddMMyyyy().format( endDate );
+        startTimeParameter = endTimeParameter = Formatter.getTIME_FORMATTER_HHmm().format( nowTime );
 
+        reportParameters.setDateFrom( startDateParameter + " " + startTimeParameter );
+        reportParameters.setDateTo( endDateParameter + " " + endTimeParameter );
 
+        // set date pickers to default values
 
+        startPicker.setValue( startDate );
+        endPicker.setValue( endDate);
+
+        startPicker.valueProperty().addListener( (obs, oldDate, newDate) -> {
+            System.out.println(newDate + " start date");
+            startDate = newDate;} );
+        endPicker.valueProperty().addListener( (obs, oldDate, newDate) -> {
+            System.out.println(newDate + " end date");
+            endDate = newDate;} );
+
+        startTime = nowTime;
+        endTime = nowTime;
         TimeSpinner startSpinner = new TimeSpinner(  );
         startSpinner.setEditable( true );
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        startSpinner.valueProperty().addListener((obs, oldTime, newTime) ->
-                System.out.println(formatter.format(newTime)));
-        gridPane.add( startSpinner, 3, 3 );
+        startSpinner.valueProperty().addListener( (obs, oldTime, newTime) -> {
+        startTime = newTime;
+            System.out.println(startTime + " start time");});
+        startSpinner.addEventHandler( KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode().equals( KeyCode.ENTER ))
+            {
+                startTime = startSpinner.getValue();
+                System.out.println(startTime + "start time");
+            }
+        } );
 
+        gridPane.add( startSpinner, 3, 3 );
 
         TimeSpinner endSpinner = new TimeSpinner(  );
         startSpinner.setEditable( true );
-        endSpinner.valueProperty().addListener((obs, oldTime, newTime) ->
-                System.out.println(formatter.format(newTime)));
+        endSpinner.valueProperty().addListener((obs, oldTime, newTime) -> {
+            endTime = newTime;
+            System.out.println(endTime + " end time");});
+        endSpinner.addEventHandler( KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode().equals( KeyCode.ENTER ))
+            {
+                endTime = startSpinner.getValue();
+                System.out.println(startTime + "end time");
+            }
+        } );
+
         gridPane.add( endSpinner, 3, 4 );
 
+        createButton.addEventHandler( MouseEvent.MOUSE_CLICKED, event -> {
+
+            createReport();
+            displayPdf();
+
+        });
+    }
+
+    private void createReport(){
+
+        Station chosenStation = DataStorage.getStations().get( stationIndex );
+        measurements = chosenStation.getMeasurementsWithinInterval( startDate, startTime, endDate, endTime );
+        System.out.println(chosenStation.fullName() + " chosen for report creation");
+        JasperAssistant.init( measurements );
+        int numberOfEntries = JasperAssistant.countSizeOfData();
+
+        if (numberOfEntries>0)
+        {
+            //measurements.forEach( System.out::println );
+            reportParameters.setStationName( chosenStation.fullName() );
+            reportParameters.setDateFrom( Formatter.getDATE_TIME_FORMATTER_ddMMyyyy_HHmm()
+                    .format( LocalDateTime.of( startDate, startTime ) ) );
+            System.out.println("Start of interval " + Formatter.getDATE_TIME_FORMATTER_ddMMyyyy_HHmm().
+                    format( LocalDateTime.of( startDate, startTime ) ));
+            reportParameters.setDateTo( Formatter.getDATE_TIME_FORMATTER_ddMMyyyy_HHmm()
+                    .format( LocalDateTime.of( endDate, endTime ) ) );
+            System.out.println("End of interval " + Formatter.getDATE_TIME_FORMATTER_ddMMyyyy_HHmm().
+                    format( LocalDateTime.of( endDate, endTime ) ));
+            reportParameters.setMeasurements( measurements ); //automatically fills the parameter map with availableTo and availableFrom parameters
+            int everyNth = (numberOfEntries - 1) / 60 + 1; // 60 points are displayed relatively comfortably, more is too tight
+            try
+            {
+                DatabaseOperator.insertDayMeasurements( measurements, everyNth );
+                reportParameters.getParameters().put("REPORT_CONNECTION", DatabaseOperator.getConnection());
+                String sourceFileName =
+                        "../WaterLevelApp/assets/waterLevelApp.jasper";
+
+                JasperPrint jasperPrint = JasperFillManager.fillReport( sourceFileName, reportParameters.getParameters(),
+                        new JRTableModelDataSource( JasperAssistant.getTableModel() ));
+                JasperExportManager.exportReportToPdfFile( jasperPrint, "report.pdf" );
+                System.out.println("A file 'report.pdf' created ");
+                DatabaseOperator.deleteFromTable( "measurements" );
+            }
+            catch ( Exception e )
+            {
+                e.printStackTrace();
+            }
+
+
+
+        }
+        else
+        {
+            main.informNoEntries();
+        }
+    }
+
+    private void displayPdf()
+    {
+        if ( Desktop.isDesktopSupported()) {
+            try {
+                File myFile = new File("report.pdf");
+                Desktop.getDesktop().open(myFile);
+            } catch (IOException ex)
+            {
+                // no application registered for PDFs
+            }
+        }
     }
 
     public ReportParameters getReportParameters()
     {
         return reportParameters;
     }
+
+
+
 }

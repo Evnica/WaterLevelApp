@@ -13,29 +13,43 @@ import java.time.format.DateTimeFormatter;
  */
 public class Formatter
 {
-    static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern( "dd.MM.yyyy" );
-    static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern( "HH:mm" );
-    static final DateTimeFormatter WEB_FORMATTER = DateTimeFormatter.ofPattern( "yyyy-MM-dd'T'HH:mm:ss'Z'" );
+    static final DateTimeFormatter DATE_FORMATTER_ddMMyyyy = DateTimeFormatter.ofPattern( "dd.MM.yyyy" );
+    static final DateTimeFormatter TIME_FORMATTER_HHmm = DateTimeFormatter.ofPattern( "HH:mm" );
+    static final DateTimeFormatter DATE_FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern( "yyyy-MM-dd" );
+    static final DateTimeFormatter TIME_FORMATTER_HHmmss = DateTimeFormatter.ofPattern( "HH:mm:ss" );
+    static final DateTimeFormatter DATE_TIME_FORMATTER_ddMMyyyy_HHmm = DateTimeFormatter.ofPattern( "dd.MM.yyyy HH:mm" );
+
     static final NumberFormat NUMBER_FORMAT = new DecimalFormat( "#0.00" );
 
-    public static DateTimeFormatter getWebDateFormatter()
+
+    public static DateTimeFormatter getDATE_FORMATTER_ddMMyyyy()
     {
-        return WEB_FORMATTER;
+        return DATE_FORMATTER_ddMMyyyy;
     }
 
-    public static DateTimeFormatter getDateFormatter()
+    public static DateTimeFormatter getTIME_FORMATTER_HHmm()
     {
-        return DATE_FORMATTER;
-    }
-
-    public static DateTimeFormatter getTimeFormatter()
-    {
-        return TIME_FORMATTER;
+        return TIME_FORMATTER_HHmm;
     }
 
     public static NumberFormat getNumberFormat()
     {
         return NUMBER_FORMAT;
+    }
+
+    public static DateTimeFormatter getDATE_FORMATTER_yyyyMMdd()
+    {
+        return DATE_FORMATTER_yyyyMMdd;
+    }
+
+    public static DateTimeFormatter getTIME_FORMATTER_HHmmss()
+    {
+        return TIME_FORMATTER_HHmmss;
+    }
+
+    public static DateTimeFormatter getDATE_TIME_FORMATTER_ddMMyyyy_HHmm()
+    {
+        return DATE_TIME_FORMATTER_ddMMyyyy_HHmm;
     }
 }
 

@@ -55,7 +55,7 @@ public class DayMeasurement implements Comparable<DayMeasurement>
             hourlyValues = hourlyValues + "\n" + m;
         }
 
-        return Formatter.DATE_FORMATTER.format( date ) + hourlyValues;
+        return Formatter.DATE_FORMATTER_ddMMyyyy.format( date ) + hourlyValues;
     }
 }
 

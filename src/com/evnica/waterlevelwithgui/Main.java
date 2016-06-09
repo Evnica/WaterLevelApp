@@ -2,10 +2,6 @@ package com.evnica.waterlevelwithgui;
 
 import com.evnica.waterlevelwithgui.logic.*;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -19,25 +15,19 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends Application {
 
     private Stage primaryStage;
     private Stage dialog;
-    public static List<Station> stations = new ArrayList<>();
     private static final Logger LOGGER = LogManager.getLogger(DataReader.class);
 
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        if ( !loadData() )
-        {
-           LOGGER.error( "Data not loaded. Ooooooops..." );
-        }
+        try{
+            DataStorage.fillTheStorage( "../WaterLevelApp/resources" );
 
         this.primaryStage = primaryStage;
         FXMLLoader loader = new FXMLLoader(getClass().getResource( "main.fxml" ));
@@ -87,8 +77,12 @@ public class Main extends Application {
                 dialog.show();
             }
         } );
-
         primaryStage.show();
+        }
+        catch ( IOException e )
+        {
+            LOGGER.error( "Can't read the data source(s) ", e );
+        }
     }
 
     public void show()
@@ -96,43 +90,16 @@ public class Main extends Application {
         this.primaryStage.show();
     }
 
-    public Stage getPrimaryStage()
+    Stage getPrimaryStage()
     {
         return primaryStage;
     }
 
-    private boolean loadData()
-    {
-        boolean success;
+    public void informNoEntries() {}
 
-        try
-        {
-            List<File> resources = DataReader.listAllFilesInResources( "../WaterLevelApp/resources" );
-            List<List<String>> data = new ArrayList<>( resources.size() );
-            for (File source: resources)
-            {
-                data.add( DataReader.readData( source ) );
-            }
-
-            for ( List<String> fileContent: data )
-            {
-                stations.add( DataProcessor.convertTextIntoStation( fileContent ) );
-            }
-            if ( DatabaseOperator.connect() )
-            {
-                stations.forEach( DatabaseOperator::insert );
-            }
-            success = true;
-        }
-        catch ( IOException e )
-        {
-            success = false;
-            LOGGER.error( "Can't load data", e );
-        }
-        return success;
-    }
 
     public static void main( String[] args) {
         launch(args);
     }
+
 }

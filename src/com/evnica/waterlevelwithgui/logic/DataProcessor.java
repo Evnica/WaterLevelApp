@@ -68,7 +68,7 @@ public class DataProcessor
 
             try
             {
-                measurementTime = LocalTime.parse( onePairSplit[0], Formatter.TIME_FORMATTER );
+                measurementTime = LocalTime.parse( onePairSplit[0], Formatter.TIME_FORMATTER_HHmm );
                 if (onePairSplit[0].equals( "24:00" ))
                 {
                     newDay = true;
@@ -79,7 +79,7 @@ public class DataProcessor
                 if (onePairSplit[0].equals( "24:00" ))
                 {
                     newDay = true;
-                    measurementTime = LocalTime.parse( "00:00", Formatter.TIME_FORMATTER );
+                    measurementTime = LocalTime.parse( "00:00", Formatter.TIME_FORMATTER_HHmm );
                 }
                 else
                 {
@@ -94,7 +94,7 @@ public class DataProcessor
             {
                 try
                 {
-                    date = LocalDate.parse( stringDate, Formatter.DATE_FORMATTER );
+                    date = LocalDate.parse( stringDate, Formatter.DATE_FORMATTER_ddMMyyyy );
                 }
                 catch ( Exception e )
                 {

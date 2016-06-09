@@ -8,6 +8,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +40,7 @@ public class DatabaseOperatorTest
     @Test
     public void insert() throws Exception
     {
+
         List<File> resources = DataReader.listAllFilesInResources( "../WaterLevelApp/resources" );
         List<List<String>> data = new ArrayList<>( resources.size() );
         for (File source: resources)
@@ -47,8 +51,12 @@ public class DatabaseOperatorTest
 
         Station station = DataProcessor.convertTextIntoStation( data.get( 0 ) );
         assertTrue( DatabaseOperator.insert( station ) );
+        assertTrue( DatabaseOperator.insertDayMeasurements( station
+                .getMeasurementsWithinInterval
+                        ( LocalDate.of( 2015, 2, 20 ), LocalTime.of( 10,0 ),
+                                LocalDate.of( 2015, 2, 22 ), LocalTime.of( 10,0 ) ), 1 ) );
         assertTrue( DatabaseOperator.deleteFromTable( station.place ) );
-        assertTrue( DatabaseOperator.dropTable( station.place ) );
+        DatabaseOperator.dropTable( station.place );
     }
 
 }

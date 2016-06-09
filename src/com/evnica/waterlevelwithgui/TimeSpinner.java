@@ -1,5 +1,6 @@
 package com.evnica.waterlevelwithgui;
 
+import com.evnica.waterlevelwithgui.logic.Formatter;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Spinner;
@@ -45,14 +46,12 @@ class TimeSpinner extends Spinner<LocalTime>
     public TimeSpinner(LocalTime time) {
         setEditable(true);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-
         StringConverter<LocalTime> localTimeConverter = new StringConverter<LocalTime>()
         {
             @Override
             public String toString(LocalTime time)
             {
-                return formatter.format(time);
+                return Formatter.getTIME_FORMATTER_HHmm().format(time);
             }
 
             @Override

@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +59,7 @@ public class DatabaseOperator
         {
             if (!stationsInDb.contains( station.place ))
             {
-                createTable( station.place );
+                provideEmptyTable( station.place );
             }
             if (stationsInDb.contains( station.place ))
             {
@@ -72,8 +71,8 @@ public class DatabaseOperator
                             for ( Measurement pair : day.hourlyMeasurementValues )
                             {
                                 //The format is yyyy-MM-dd hh:mm:ss[.nnnnnnnnn] // http://www.h2database.com/html/datatypes.html#timestamp_type
-                                timestamp = DateTimeFormatter.ofPattern( "yyyy-MM-dd" ).format( day.date ) + " "
-                                        + DateTimeFormatter.ofPattern( "hh:mm:ss" ).format( pair.timestamp );
+                                timestamp = Formatter.getDATE_FORMATTER_yyyyMMdd().format( day.date ) + " "
+                                        + Formatter.getTIME_FORMATTER_HHmmss().format( pair.timestamp );
                                 statement.execute( "INSERT INTO " + station.place + " VALUES" +
                                         "('" + timestamp + "', " + pair.value + ")" );
                             }
@@ -104,7 +103,88 @@ public class DatabaseOperator
         return success;
     }
 
-    public static boolean deleteFromTable(String station) throws Exception
+    public static boolean insertDayMeasurements(List<DayMeasurement> dayMeasurements, int step) throws SQLException
+    {
+        List<MeasurementForDb> pairsForDb = new ArrayList<>(  );
+
+        if (step > 1)
+        {
+            int starting = 0, current, last;
+            String tStamp;
+            double value;
+
+            for (DayMeasurement day: dayMeasurements)
+            {
+                current = starting;
+                last = day.getHourlyMeasurementValues().size() - 1;
+                while ( current <= last )
+                {
+                    tStamp = Formatter.getDATE_FORMATTER_yyyyMMdd().format( day.date ) + " "
+                            + Formatter.getTIME_FORMATTER_HHmmss().format( day.getHourlyMeasurementValues().get( current ).timestamp );
+                    value = day.getHourlyMeasurementValues().get( current ).getValue();
+                    pairsForDb.add( new MeasurementForDb( value, tStamp ) );
+                    current += step;
+                }
+                if (current > last)
+                {
+                    starting = current - last - 1;
+                }
+                else
+                {
+                    starting = 0;
+                }
+            }
+        }
+
+
+        boolean success = false;
+        provideEmptyTable( "measurements" );
+        Statement statement;
+        boolean connected = true; //supposedly, but later we we'll make sure it's true before we execute insert
+        String timestamp;
+
+        if (connection == null)
+        {
+            connected = connect();
+        }
+        if (connected)
+        {
+            statement = connection.createStatement();
+
+            if ( step > 1 )
+            {
+                for (MeasurementForDb measurementForDb: pairsForDb)
+                {
+                    statement.execute( "INSERT INTO measurements VALUES" +
+                            "('" + measurementForDb.time + "', " + measurementForDb.value + ")"  );
+                }
+            }
+            else
+            {
+                for ( DayMeasurement day : dayMeasurements )
+                {
+                    for ( Measurement pair : day.hourlyMeasurementValues )
+                    {
+                        timestamp = Formatter.getDATE_FORMATTER_yyyyMMdd().format( day.date ) + " "
+                                + Formatter.getTIME_FORMATTER_HHmmss().format( pair.timestamp );
+                        statement.execute( "INSERT INTO measurements VALUES" +
+                                "('" + timestamp + "', " + pair.value + ")" );
+                    }
+                }
+                success = true;
+            }
+            try
+            {
+                statement.close();
+            } catch ( SQLException e )
+            {
+                LOGGER.error( "Couldn't close statement ", e );
+            }
+        }
+        return success;
+    }
+
+    public static boolean deleteFromTable(String tableName) throws Exception
     {
         boolean success = false;
         boolean connected = true;
@@ -114,18 +194,18 @@ public class DatabaseOperator
         }
         if (connected)
         {
-            if ( stationsInDb.contains( station ) )
+            if ( stationsInDb.contains( tableName ) )
             {
                 PreparedStatement statement = null;
                 try
                 {
-                    statement = connection.prepareStatement("DELETE FROM " + station);
+                    statement = connection.prepareStatement("DELETE FROM " + tableName);
                     statement.executeUpdate();
                     success = true;
                 }
                 catch ( SQLException e )
                 {
-                    LOGGER.error( "Can't delete from the table " + station, e );
+                    LOGGER.error( "Can't delete from the table " + tableName, e );
                     success = false;
                 }
                 finally
@@ -147,7 +227,8 @@ public class DatabaseOperator
         return success;
     }
 
-    public static boolean createTable(String station)
+    //create or clear
+    public static boolean provideEmptyTable( String tableName)
     {
         Statement statement = null;
         boolean success = false;
@@ -158,30 +239,31 @@ public class DatabaseOperator
         }
         if (connected)
         {
-            if ( !stationsInDb.contains( station ) )
+            if ( !stationsInDb.contains( tableName ) )
             {
                 try
                 {
                     statement = connection.createStatement();
-                    statement.executeUpdate( "CREATE TABLE " + station + " (" +
-                            "timestamp TIMESTAMP," +
+                    statement.executeUpdate( "CREATE TABLE " + tableName + " (" +
+                            "timestamp TIMESTAMP, " +
                             "value DOUBLE" +
                             ")" );
-                    stationsInDb.add( station );
+                    stationsInDb.add( tableName );
                     success = true;
                 }
                 catch ( SQLException e )
                 {
-                    LOGGER.info( "Table " + station + " already exists" );
+                    LOGGER.info( "Table " + tableName + " already exists" );
                     try
                     {
-                        deleteFromTable( station );
-                        LOGGER.info( "Values deleted from " + station + ". Table empty." );
+                        deleteFromTable( tableName );
+                        LOGGER.info( "Values deleted from " + tableName + ". Table empty." );
+                        stationsInDb.add( tableName );
                         success = true;
                     }
                     catch ( Exception e1)
                     {
-                        LOGGER.error( "Values can't be deleted from  " + station, e );
+                        LOGGER.error( "Values can't be deleted from  " + tableName, e );
                         success = false;
                     }
                 }
@@ -203,48 +285,41 @@ public class DatabaseOperator
         return success;
     }
 
-    public static boolean dropTable(String station)
+    public static void dropTable(String tableName)
     {
         Statement statement = null;
         boolean connected = true;
-        boolean success = false;
         if (connection == null)
         {
             connected = connect();
         }
         if (connected)
         {
-            if ( stationsInDb.contains( station ) )
+            try
             {
-                try
+                statement = connection.createStatement();
+                statement.execute( "DROP TABLE " + tableName );
+                stationsInDb.remove( tableName );
+            }
+            catch ( SQLException e )
+            {
+                LOGGER.error( "Can't drop table " + tableName + " " + e.getMessage() );
+            }
+            finally
+            {
+                if (statement != null)
                 {
-                    statement = connection.createStatement();
-                    statement.execute( "DROP TABLE " + station );
-                    stationsInDb.remove( station );
-                    success = true;
-                }
-                catch ( SQLException e )
-                {
-                    LOGGER.error( "Can't drop table " + station, e );
-                    success = false;
-                }
-                finally
-                {
-                    if (statement != null)
+                    try
                     {
-                        try
-                        {
-                            statement.close();
-                        }
-                        catch ( SQLException e )
-                        {
-                            LOGGER.error( "Drop statement didn't get closed ", e );
-                        }
+                        statement.close();
+                    }
+                    catch ( SQLException e )
+                    {
+                        LOGGER.error( "Drop statement didn't get closed ", e );
                     }
                 }
             }
         }
-        return success;
     }
 
     public static boolean closeConnection()
@@ -268,6 +343,7 @@ public class DatabaseOperator
     {
         return connection;
     }
+
 
 }
 

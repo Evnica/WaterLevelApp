@@ -57,11 +57,11 @@ public class Measurement implements Comparable<Measurement>
         String result;
         if (value != null)
         {
-            result = Formatter.TIME_FORMATTER.format( timestamp ) + "#" + Formatter.NUMBER_FORMAT.format( value );
+            result = Formatter.TIME_FORMATTER_HHmm.format( timestamp ) + "#" + Formatter.NUMBER_FORMAT.format( value );
         }
         else
         {
-            result = Formatter.TIME_FORMATTER.format( timestamp ) + "#" + value;
+            result = Formatter.TIME_FORMATTER_HHmm.format( timestamp ) + "#" + value;
         }
         return result;
     }

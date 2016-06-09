@@ -1,6 +1,7 @@
-package com.evnica.waterlevelwithgui.logic;
+package com.evnica.waterlevelwithgui;
 
 import com.evnica.waterlevelwithgui.Main;
+import com.evnica.waterlevelwithgui.logic.DatabaseOperator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
@@ -24,7 +25,13 @@ public class DialogController
     {
         yesExit.defaultButtonProperty().setValue( true );
         yesExit.setOnAction( event -> {
-            Main.stations.forEach( station -> DatabaseOperator.dropTable( station.place ) );
+            try
+            {
+                DatabaseOperator.dropTable( "measurements");
+            } catch ( Exception e )
+            {
+                e.printStackTrace();
+            }
             DatabaseOperator.closeConnection();
             yesExit.getScene().getWindow().hide();
         } );

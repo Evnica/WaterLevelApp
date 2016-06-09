@@ -9,7 +9,7 @@
 .root{
     -fx-font: 18px Calibri;
     -fx-font-weight: bold;
-    -fx-background-image: url('../../../assets/drop-640x423_gray.jpg');
+    -fx-background-image: url('../../../assets/backgr.jpg');
     -fx-background-color: ghostwhite;
 }
 
