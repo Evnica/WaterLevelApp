@@ -24,12 +24,12 @@ public class DayMeasurement implements Comparable<DayMeasurement>
         this.hourlyMeasurementValues = hourlyMeasurementValues;
     }
 
-    public List<Measurement> getHourlyMeasurementValues()
+    List<Measurement> getHourlyMeasurementValues()
     {
         return hourlyMeasurementValues;
     }
 
-    public LocalDate getDate()
+    LocalDate getDate()
     {
         return date;
     }
