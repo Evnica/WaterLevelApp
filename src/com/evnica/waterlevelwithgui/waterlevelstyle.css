@@ -1,0 +1,51 @@
+#hint {
+    -fx-font: 18px Calibri;
+    -fx-fill: #2f2f2f;
+    -fx-stroke: #464544;
+    -fx-stroke-width: 0.5;
+    -fx-effect: dropshadow(  three-pass-box , rgba(222, 222, 222, 0.5), 0,0,0,1 );
+}
+
+.root{
+    -fx-font: 18px Calibri;
+    -fx-font-weight: bold;
+    -fx-background-image: url('../../../assets/drop-640x423_gray.jpg');
+    -fx-background-color: ghostwhite;
+}
+
+#stationNameTxt, #startTxt, #endTxt, #formatTxt, #timeFrameTxt{
+    -fx-font: 18px Calibri;
+    -fx-fill: #393939;
+    -fx-stroke: #0e0c0c;
+    -fx-stroke-width: 0.5;
+    -fx-effect: dropshadow(  three-pass-box , rgba(222, 222, 222, 0.5), 0,0,0,1 );
+}
+
+.button{
+    -fx-font: 16px Calibri;
+    -fx-background-color:
+            linear-gradient(#f2f2f2, #d6d6d6),
+            linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+            linear-gradient(#dddddd 0%, #f6f6f6 50%);
+    -fx-background-radius: 8,7,6;
+    -fx-background-insets: 0,1,2;
+    -fx-text-fill: #464544;
+    -fx-effect: dropshadow(  three-pass-box , rgba(222, 222, 222, 0.5), 0,0,0,1 );
+}
+
+.combo-box{
+    -fx-font: 15px Calibri;
+    -fx-background-color:
+            linear-gradient(#f2f2f2, #d6d6d6),
+            linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+            linear-gradient(#dddddd 0%, #f6f6f6 50%);
+    -fx-background-radius: 8,7,6;
+    -fx-background-insets: 0,1,2;
+    -fx-text-fill: #393939;
+    -fx-effect: dropshadow( three-pass-box , rgba(222, 222, 222, 0.6), 5, 0.0 , 0 , 1 );
+}
+
+.spinner{
+    -fx-font: 12pt Calibri;
+}
+
