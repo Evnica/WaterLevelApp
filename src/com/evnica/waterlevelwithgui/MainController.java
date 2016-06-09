@@ -4,12 +4,16 @@ import com.evnica.waterlevelwithgui.logic.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -18,7 +22,6 @@ import net.sf.jasperreports.engine.data.JRTableModelDataSource;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -178,6 +181,42 @@ public class MainController
             displayPdf();
 
         });
+
+        aboutButton.addEventHandler( MouseEvent.MOUSE_CLICKED, event -> {
+            try
+            {
+                createAboutDialog();
+            } catch ( IOException e )
+            {
+                e.printStackTrace();
+            }
+
+        } );
+
+    }
+
+    private void createAboutDialog() throws IOException
+    {
+        FXMLLoader dialogLoader = new FXMLLoader(getClass().getResource( "about.fxml" ));
+        Parent dialogRoot = dialogLoader.load();
+        AboutController aboutController = dialogLoader.getController();
+        aboutController.aboutLabel.setText(
+                "This program is intended to create PDF reports based on \n " +
+                        ".txt measurement data in BS2016SS format (other formats \n" +
+                        "are not supported yet). Files from the /resources folder \n" +
+                        "should contain one measurement station each. Duplicates \n" +
+                        "are not processed correctly. App is not intended to be \n" +
+                        "of production quality. GUI has to be further developed. \n" +
+                        "It's not curious-user-proof. Created PDFs are opened \n" +
+                        "with the default system program, if such exists." );
+        Stage about = new Stage(  );
+        about.setTitle( "Über das Programm" );
+        about.getIcons().add( new javafx.scene.image.Image( Main.class.getResourceAsStream( "../../../assets/drop.png" ) ) );
+        Scene aboutScene = new Scene( dialogRoot, 450, 300 );
+        aboutScene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );
+        about.setScene( aboutScene );
+        about.setResizable( false );
+        about.show();
     }
 
     private void createReport(){

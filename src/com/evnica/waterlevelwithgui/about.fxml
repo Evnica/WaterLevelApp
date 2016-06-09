@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="aboutPane" alignment="CENTER" gridLinesVisible="false" hgap="15"
+          minHeight="200" minWidth="300" prefHeight="300.0" prefWidth="450.0"
+          xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.evnica.waterlevelwithgui.AboutController">
+    <padding><Insets bottom="10" left="20" right="10" top="20" /></padding>
+
+    <columnConstraints>
+        <ColumnConstraints minWidth="300.0" prefWidth="450.0" halignment="CENTER" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="110.0" prefHeight="200.0" />
+        <RowConstraints minHeight="30.0" prefHeight="40.0" />
+    </rowConstraints>
+
+    <children>
+        <Label fx:id="aboutLabel" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <Button fx:id="aboutButton" minWidth="80.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="99.0" text="OK"
+                textAlignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="CENTER" />
+    </children>
+
+</GridPane>
