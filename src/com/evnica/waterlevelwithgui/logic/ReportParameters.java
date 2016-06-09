@@ -87,7 +87,7 @@ public class ReportParameters
 
     public void putQueryParameter( int i )
     {
-        String sqlQuery = null;
+        String sqlQuery;
         if ( i != 1 )
         {
             sqlQuery = "SELECT table.timestamp, table.value FROM " +

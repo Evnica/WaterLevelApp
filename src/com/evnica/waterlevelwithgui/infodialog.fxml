@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.layout.*?>
 
 <GridPane fx:id="dialogPane" alignment="CENTER" gridLinesVisible="false" hgap="20"

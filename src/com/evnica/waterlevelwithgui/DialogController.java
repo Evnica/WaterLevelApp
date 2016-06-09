@@ -41,7 +41,7 @@ public class DialogController
         } );
     }
 
-    public void setMainApp(Main main) {
+    void setMainApp(Main main) {
         this.main = main;
     }
 

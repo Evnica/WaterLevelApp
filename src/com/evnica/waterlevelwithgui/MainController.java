@@ -52,7 +52,7 @@ public class MainController
     private int stationIndex;
     private List<DayMeasurement> measurements;
 
-    public void setMainApp(Main main) {
+    void setMainApp(Main main) {
         this.main = main;
     }
 

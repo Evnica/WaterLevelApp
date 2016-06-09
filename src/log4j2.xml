@@ -15,7 +15,6 @@
                      filePattern="${ARCHIVE}/waterLevel.log.%d{yyyy-MM-dd-hh-mm}.gz">
             <PatternLayout pattern="${PATTERN}"/>
             <Policies>
-            <TimeBasedTriggeringPolicy interval="10" modulate="true" />
             <SizeBasedTriggeringPolicy size="10 MB" />
             </Policies>
         </RollingFile>

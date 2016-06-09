@@ -85,7 +85,7 @@ public class Main extends Application {
         }
     }
 
-    public void show()
+    void show()
     {
         this.primaryStage.show();
     }
