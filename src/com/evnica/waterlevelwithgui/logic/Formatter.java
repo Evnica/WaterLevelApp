@@ -15,9 +15,9 @@ public class Formatter
 {
     static final DateTimeFormatter DATE_FORMATTER_ddMMyyyy = DateTimeFormatter.ofPattern( "dd.MM.yyyy" );
     static final DateTimeFormatter TIME_FORMATTER_HHmm = DateTimeFormatter.ofPattern( "HH:mm" );
-    static final DateTimeFormatter DATE_FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern( "yyyy-MM-dd" );
-    static final DateTimeFormatter TIME_FORMATTER_HHmmss = DateTimeFormatter.ofPattern( "HH:mm:ss" );
-    static final DateTimeFormatter DATE_TIME_FORMATTER_ddMMyyyy_HHmm = DateTimeFormatter.ofPattern( "dd.MM.yyyy HH:mm" );
+    private static final DateTimeFormatter DATE_FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern( "yyyy-MM-dd" );
+    private static final DateTimeFormatter TIME_FORMATTER_HHmmss = DateTimeFormatter.ofPattern( "HH:mm:ss" );
+    private static final DateTimeFormatter DATE_TIME_FORMATTER_ddMMyyyy_HHmm = DateTimeFormatter.ofPattern( "dd.MM.yyyy HH:mm" );
 
     static final NumberFormat NUMBER_FORMAT = new DecimalFormat( "#0.00" );
 
@@ -32,17 +32,12 @@ public class Formatter
         return TIME_FORMATTER_HHmm;
     }
 
-    public static NumberFormat getNumberFormat()
-    {
-        return NUMBER_FORMAT;
-    }
-
-    public static DateTimeFormatter getDATE_FORMATTER_yyyyMMdd()
+    static DateTimeFormatter getDATE_FORMATTER_yyyyMMdd()
     {
         return DATE_FORMATTER_yyyyMMdd;
     }
 
-    public static DateTimeFormatter getTIME_FORMATTER_HHmmss()
+    static DateTimeFormatter getTIME_FORMATTER_HHmmss()
     {
         return TIME_FORMATTER_HHmmss;
     }
