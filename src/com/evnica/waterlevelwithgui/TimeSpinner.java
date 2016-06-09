@@ -13,7 +13,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Class: TimeSpinner
@@ -29,21 +28,17 @@ class TimeSpinner extends Spinner<LocalTime>
 
     private final ObjectProperty<Mode> mode = new SimpleObjectProperty<>(Mode.HOURS) ;
 
-    public ObjectProperty<Mode> modeProperty() {
+    private ObjectProperty<Mode> modeProperty() {
         return mode;
     }
 
-    public final Mode getMode() {
-        return modeProperty().get();
-    }
-
-    public final void setMode(Mode mode) {
+    private void setMode(Mode mode) {
         modeProperty().set(mode);
     }
 
     private long lastPressProcessed = 0;
 
-    public TimeSpinner(LocalTime time) {
+    private TimeSpinner(LocalTime time) {
         setEditable(true);
 
         StringConverter<LocalTime> localTimeConverter = new StringConverter<LocalTime>()
@@ -158,20 +153,16 @@ class TimeSpinner extends Spinner<LocalTime>
                             this.decrement(1);
                             lastPressProcessed = System.currentTimeMillis();
                         }
-                        else if (( ( KeyEvent ) e ).getCode().equals( KeyCode.ENTER ))
-                        {
-
-                        }
                     }
                 }
             );
     }
 
-    public TimeSpinner() {
+    TimeSpinner() {
         this(LocalTime.now());
     }
 
-    enum Mode
+    private enum Mode
     {
         HOURS
         {
