@@ -18,6 +18,8 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.io.File;
@@ -54,6 +56,8 @@ public class MainController
     private Main main;
     private int stationIndex;
     private List<DayMeasurement> measurements;
+
+    private static final Logger LOGGER = LogManager.getLogger(MainController.class);
 
     void setMainApp(Main main) {
         this.main = main;
@@ -256,15 +260,29 @@ public class MainController
             }
             catch ( Exception e )
             {
-                e.printStackTrace();
+                try
+                {
+                    main.showInfoDialog(   "Die Datei report.pdf wurde \n" +
+                                         "in WaterLevelApp Ordner erstellt" );
+                } catch ( Exception e1 )
+                {
+                    LOGGER.error( "Can't inform user that report was created", e1 );
+                }
             }
-
 
 
         }
         else
         {
-            main.informNoEntries();
+            try
+            {
+                main.showInfoDialog( "Es gibt keine Messdaten für den angegebenen " +
+                                     "\nZeitintervall. Bitte wählen Sie ein \n" +
+                                     "anderes Anfangsdatum bzw. Enddatun" );
+            } catch ( Exception e )
+            {
+                LOGGER.error( "Can't inform user that there's no data for the chosen time frame", e );
+            }
         }
     }
 

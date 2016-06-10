@@ -47,6 +47,7 @@ public class Main extends Application {
             Scene scene = new Scene(root, 560, 300);
             scene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );
             primaryStage.setScene(scene);
+
             dialog = new Stage( );
 
             primaryStage.setOnHiding( event -> {
@@ -90,7 +91,16 @@ public class Main extends Application {
 
             if (noResources)
             {
-                showInfoDialog( "Es gibt keine Datenquellen. \nBitte kopieren Sie die Quelldateien \nin den /resources Ordner und starten \ndas Programm neu.");
+                try
+                {
+                    showInfoDialog( "Es gibt keine Datenquellen. " +
+                            "\nBitte kopieren Sie die Quelldateien " +
+                            "\nin den /resources Ordner und starten " +
+                            "\ndas Programm neu.");
+                } catch ( Exception e )
+                {
+                    LOGGER.error( "Can't inform user that there are no data sources", e );
+                }
             }
 
         }
@@ -106,16 +116,11 @@ public class Main extends Application {
         return primaryStage;
     }
 
-    public void informNoEntries() {}
-
-
     public static void main( String[] args) {
         launch(args);
     }
 
-
-
-    public void showInfoDialog(String message) throws Exception
+    void showInfoDialog(String message) throws Exception
     {
         FXMLLoader infoLoader = new FXMLLoader(getClass().getResource( "infodialog.fxml" ));
         Parent infoRoot = infoLoader.load();
