@@ -1,4 +1,4 @@
-package com.evnica.waterlevelwithgui.logic;
+package waterlevel;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,4 +1,4 @@
-package com.evnica.waterlevelwithgui.logic;
+package waterlevel;
 
 import java.io.File;
 import java.io.IOException;

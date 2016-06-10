@@ -1,4 +1,4 @@
-package com.evnica.waterlevelwithgui;
+package waterlevel;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

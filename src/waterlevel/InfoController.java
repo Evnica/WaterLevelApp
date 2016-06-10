@@ -1,6 +1,5 @@
-package com.evnica.waterlevelwithgui;
+package waterlevel;
 
-import com.evnica.waterlevelwithgui.logic.DatabaseOperator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

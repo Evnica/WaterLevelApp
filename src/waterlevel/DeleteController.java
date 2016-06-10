@@ -1,6 +1,5 @@
-package com.evnica.waterlevelwithgui;
+package waterlevel;
 
-import com.evnica.waterlevelwithgui.logic.DatabaseOperator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -46,9 +45,7 @@ public class DeleteController
             }
         } );
 
-        noDelete.setOnAction( event -> {
-            noDelete.getScene().getWindow().hide();
-        } );
+        noDelete.setOnAction( event -> noDelete.getScene().getWindow().hide() );
     }
 
     void setMainApp(Main main) {
@@ -57,7 +54,7 @@ public class DeleteController
 
     private boolean deleteFiles()
     {
-        File reportDir = new File( "../WaterLevelApp/reports" );
+        File reportDir = new File( "./reports" ); //"../WaterLevelApp/reports"
         boolean success = false;
         try
         {

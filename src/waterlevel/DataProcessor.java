@@ -1,4 +1,4 @@
-package com.evnica.waterlevelwithgui.logic;
+package waterlevel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

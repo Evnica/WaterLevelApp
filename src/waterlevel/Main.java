@@ -1,6 +1,5 @@
-package com.evnica.waterlevelwithgui;
+package waterlevel;
 
-import com.evnica.waterlevelwithgui.logic.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -15,6 +14,7 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Main extends Application {
@@ -28,7 +28,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         boolean noResources = false;
         try{
-            DataStorage.fillTheStorage( "../WaterLevelApp/resources" );
+
+            DataStorage.fillTheStorage( "./resources" ); //"../WaterLevelApp/resources"
+            LOGGER.error(new File( "./resources" ).getAbsolutePath());
         }
         catch ( IOException e )
         {
@@ -45,7 +47,14 @@ public class Main extends Application {
                 MainController controller =  loader.getController();
                 controller.setMainApp( this );
                 primaryStage.setTitle("Pegelberichte");
-                primaryStage.getIcons().add( new Image( Main.class.getResourceAsStream( "../../../assets/drop.png" ) ) );
+                try
+                {
+                    LOGGER.error(new File( "assets/drop.png" ).getAbsolutePath());
+                    primaryStage.getIcons().add( new Image( "assets/drop.png" ) ); //"../../../assets/drop.png"
+                } catch ( Exception e )
+                {
+                    LOGGER.error( "", e );
+                }
                 Scene scene = new Scene(root, 560, 300);
                 scene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );
                 primaryStage.setScene(scene);
@@ -64,7 +73,13 @@ public class Main extends Application {
                 DialogController dialogController = dialogLoader.getController();
                 dialogController.setMainApp( this );
                 dialog.setTitle( "Bestätigung" );
-                dialog.getIcons().add( new Image( Main.class.getResourceAsStream( "../../../assets/drop.png" ) ) );
+                try
+                {
+                    dialog.getIcons().add( new Image( "assets/drop.png" ) ); //"../../../assets/drop.png"
+                } catch ( Exception e )
+                {
+                    LOGGER.error( "", e );
+                }
                 Scene dialogScene = new Scene( dialogRoot, 320, 145 );
                 dialogScene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );
                 dialog.setScene( dialogScene );
@@ -134,7 +149,13 @@ public class Main extends Application {
         infoController.setMainApp( this );
         info = new Stage( );
         info.setTitle( "Info" );
-        info.getIcons().add( new Image( Main.class.getResourceAsStream( "../../../assets/drop.png" ) ) );
+        try
+        {
+            info.getIcons().add( new Image( "assets/drop.png" ) ); //"../../../assets/drop.png"
+        } catch ( Exception e )
+        {
+            LOGGER.error( "", e );
+        }
         infoController.infoLabel.setText( message );
         Scene infoScene = new Scene( infoRoot, 320, 165 );
         infoScene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );

@@ -9,14 +9,14 @@
 .root{
     -fx-font: 18px Calibri;
     -fx-font-weight: bold;
-    -fx-background-image: url('../../../assets/backgr.jpg');
+    -fx-background-image: url('../assets/backgr.jpg');
     -fx-background-color: ghostwhite;
 }
 
 #infoPane, #aboutPane{
     -fx-font: 15px Calibri;
     -fx-font-weight: bold;
-    -fx-background-image: url('../../../assets/backgr.jpg');
+    -fx-background-image: url('../assets/backgr.jpg');
     -fx-background-color: ghostwhite;
 }
 

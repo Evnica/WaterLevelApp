@@ -1,6 +1,5 @@
-package com.evnica.waterlevelwithgui;
+package waterlevel;
 
-import com.evnica.waterlevelwithgui.logic.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -242,7 +241,13 @@ public class MainController
                         "with the default system program, if such exists." );
         Stage about = new Stage(  );
         about.setTitle( "Über das Programm" );
-        about.getIcons().add( new javafx.scene.image.Image( Main.class.getResourceAsStream( "../../../assets/drop.png" ) ) );
+        try
+        {
+            about.getIcons().add( new javafx.scene.image.Image( "assets/drop.png") );
+        } catch ( Exception e )
+        {
+            LOGGER.error( "", e );
+        }
         Scene aboutScene = new Scene( dialogRoot, 450, 300 );
         aboutScene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );
         about.setScene( aboutScene );
@@ -259,7 +264,13 @@ public class MainController
         deleteController.setMainApp( main );
         Stage about = new Stage(  );
         about.setTitle( "Bestätigung des Löschens" );
-        about.getIcons().add( new javafx.scene.image.Image( Main.class.getResourceAsStream( "../../../assets/drop.png" ) ) );
+        try
+        {
+            about.getIcons().add( new javafx.scene.image.Image( "assets/drop.png" ) );
+        } catch ( Exception e )
+        {
+            LOGGER.error( "", e );
+        }
         Scene aboutScene = new Scene( dialogRoot, 320, 135 );
         aboutScene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );
         about.setScene( aboutScene );
@@ -295,7 +306,7 @@ public class MainController
                 DatabaseOperator.insertDayMeasurements( measurements, everyNth );
                 reportParameters.getParameters().put("REPORT_CONNECTION", DatabaseOperator.getConnection());
                 String sourceFileName =
-                        "../WaterLevelApp/assets/waterLevelApp.jasper";
+                        "assets/waterLevelApp.jasper"; //"../WaterLevelApp/assets/waterLevelApp.jasper"
 
                 JasperPrint jasperPrint = JasperFillManager.fillReport( sourceFileName, reportParameters.getParameters(),
                         new JRTableModelDataSource( JasperAssistant.getTableModel() ));

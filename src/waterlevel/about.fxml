@@ -7,7 +7,7 @@
 <GridPane fx:id="aboutPane" alignment="CENTER" gridLinesVisible="false" hgap="15"
           minHeight="200" minWidth="300" prefHeight="300.0" prefWidth="450.0"
           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="com.evnica.waterlevelwithgui.AboutController">
+          fx:controller="waterlevel.AboutController">
     <padding><Insets bottom="10" left="20" right="10" top="20" /></padding>
 
     <columnConstraints>

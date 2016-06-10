@@ -1,6 +1,5 @@
-package com.evnica.waterlevelwithgui;
+package waterlevel;
 
-import com.evnica.waterlevelwithgui.logic.Formatter;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Spinner;

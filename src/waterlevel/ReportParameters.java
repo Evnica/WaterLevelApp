@@ -1,4 +1,4 @@
-package com.evnica.waterlevelwithgui.logic;
+package waterlevel;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -53,19 +53,40 @@ public class ReportParameters
     public void setMeasurements( List<DayMeasurement> measurements )
     {
         this.measurements = measurements;
-        availableFrom = Formatter.getDATE_TIME_FORMATTER_ddMMyyyy_HHmm().format(
-                LocalDateTime.of(
-                        measurements.get( 0 ).getDate(),
-                        measurements.get( 0 ).getHourlyMeasurementValues().get( 0 ).getTimestamp() )
-        );
+        if ( measurements.get( 0 ).getHourlyMeasurementValues().size() > 0 )
+        {
+            availableFrom = Formatter.getDATE_TIME_FORMATTER_ddMMyyyy_HHmm().format(
+                    LocalDateTime.of(
+                            measurements.get( 0 ).getDate(),
+                            measurements.get( 0 ).getHourlyMeasurementValues().get( 0 ).getTimestamp() )
+            );
+        }
+        else if (measurements.get( 1 ).getHourlyMeasurementValues().size() > 0)
+        {
+            availableFrom = Formatter.getDATE_TIME_FORMATTER_ddMMyyyy_HHmm().format(
+                    LocalDateTime.of(
+                            measurements.get( 1 ).getDate(),
+                            measurements.get( 1 ).getHourlyMeasurementValues().get( 0 ).getTimestamp() ));
+        }
+        else
+        {
+            availableFrom = dateFrom;
+        }
         int numOfEntries = measurements.size();
-        availableTo = Formatter.getDATE_TIME_FORMATTER_ddMMyyyy_HHmm().format(
-                LocalDateTime.of(
-                        measurements.get( numOfEntries - 1 ).getDate(),
-                        measurements.get( numOfEntries - 1 ).getHourlyMeasurementValues()
-                        .get( measurements.get( numOfEntries - 1 ).getHourlyMeasurementValues().size() - 1 ).getTimestamp()
-                )
-        );
+        if ( measurements.get( numOfEntries - 1 ).getHourlyMeasurementValues().size() > 1 )
+        {
+            availableTo = Formatter.getDATE_TIME_FORMATTER_ddMMyyyy_HHmm().format(
+                    LocalDateTime.of(
+                            measurements.get( numOfEntries - 1 ).getDate(),
+                            measurements.get( numOfEntries - 1 ).getHourlyMeasurementValues()
+                            .get( measurements.get( numOfEntries - 1 ).getHourlyMeasurementValues().size() - 1 ).getTimestamp()
+                    )
+            );
+        }
+        else
+        {
+            availableTo = dateTo;
+        }
         parameters.put( "AvailableTo", availableTo );
         parameters.put( "AvailableFrom", availableFrom );
 
