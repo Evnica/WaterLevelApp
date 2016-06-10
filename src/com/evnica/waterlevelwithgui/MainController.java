@@ -14,6 +14,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -56,6 +57,7 @@ public class MainController
     private Main main;
     private int stationIndex;
     private List<DayMeasurement> measurements;
+    private String lastFileName = "report.pdf";
 
     private static final Logger LOGGER = LogManager.getLogger(MainController.class);
 
@@ -153,7 +155,7 @@ public class MainController
         startSpinner.setEditable( true );
         startSpinner.valueProperty().addListener( (obs, oldTime, newTime) -> {
         startTime = newTime;
-            System.out.println(startTime + " start time");});
+        System.out.println(startTime + " start time");});
         startSpinner.addEventHandler( KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode().equals( KeyCode.ENTER ))
             {
@@ -162,10 +164,16 @@ public class MainController
             }
         } );
 
+        startSpinner.focusedProperty().addListener( (observable, oldValue, newValue  ) ->
+            { if(newValue) return;
+            commitText(startSpinner);
+            }
+        );
+
         gridPane.add( startSpinner, 3, 3 );
 
         TimeSpinner endSpinner = new TimeSpinner(  );
-        startSpinner.setEditable( true );
+        endSpinner.setEditable( true );
         endSpinner.valueProperty().addListener((obs, oldTime, newTime) -> {
             endTime = newTime;
             System.out.println(endTime + " end time");});
@@ -176,13 +184,21 @@ public class MainController
                 System.out.println(startTime + "end time");
             }
         } );
+        endSpinner.focusedProperty().addListener( (observable, oldValue, newValue) -> {
+            if (newValue) return;
+            commitText( endSpinner );
+            }
+            );
 
         gridPane.add( endSpinner, 3, 4 );
 
         createButton.addEventHandler( MouseEvent.MOUSE_CLICKED, event -> {
 
-            createReport();
-            displayPdf();
+
+            if ( createReport() )
+            {
+                displayPdf(lastFileName);
+            }
 
         });
 
@@ -223,8 +239,9 @@ public class MainController
         about.show();
     }
 
-    private void createReport(){
+    private boolean createReport(){
 
+        boolean created = false;
         Station chosenStation = DataStorage.getStations().get( stationIndex );
         measurements = chosenStation.getMeasurementsWithinInterval( startDate, startTime, endDate, endTime );
         System.out.println(chosenStation.fullName() + " chosen for report creation");
@@ -254,22 +271,26 @@ public class MainController
 
                 JasperPrint jasperPrint = JasperFillManager.fillReport( sourceFileName, reportParameters.getParameters(),
                         new JRTableModelDataSource( JasperAssistant.getTableModel() ));
-                JasperExportManager.exportReportToPdfFile( jasperPrint, "report.pdf" );
+                LocalDateTime now = LocalDateTime.now();
+                String nowString = Formatter.getDATE_TIME_FORMATTER_HHmmss_ddMMyyyy().format( now );
+                lastFileName = "reports/report_" + nowString + " .pdf";
+                JasperExportManager.exportReportToPdfFile( jasperPrint, lastFileName );
                 System.out.println("A file 'report.pdf' created ");
                 DatabaseOperator.deleteFromTable( "measurements" );
+                created = true;
             }
             catch ( Exception e )
             {
                 try
                 {
-                    main.showInfoDialog(   "Die Datei report.pdf wurde \n" +
-                                         "in WaterLevelApp Ordner erstellt" );
+                    main.showInfoDialog(    "Die Datei report" + lastFileName + ".pdf ist schon\n" +
+                                            "geöffnet oder es gibt keinen Zugang zum \"reports\"\n" +
+                                            "Ordner. Der Report kann nicht erstellt werden.");
                 } catch ( Exception e1 )
                 {
                     LOGGER.error( "Can't inform user that report was created", e1 );
                 }
             }
-
 
         }
         else
@@ -284,17 +305,26 @@ public class MainController
                 LOGGER.error( "Can't inform user that there's no data for the chosen time frame", e );
             }
         }
+        return created;
     }
 
-    private void displayPdf()
+    private void displayPdf(String fileName)
     {
         if ( Desktop.isDesktopSupported()) {
             try {
-                File myFile = new File("report.pdf");
+                File myFile = new File(fileName);
                 Desktop.getDesktop().open(myFile);
             } catch (IOException ex)
             {
-                // no application registered for PDFs
+                try
+                {
+                    main.showInfoDialog(    "Die Datei report" + lastFileName + ".pdf \n" +
+                            "wurde erstellt. Es gibt kein Programm, das\n" +
+                            "diese Datei öffnen kann.");
+                } catch ( Exception e )
+                {
+                    LOGGER.error( "Can't open PDF", e );
+                }
             }
         }
     }
@@ -304,6 +334,17 @@ public class MainController
         return reportParameters;
     }
 
-
+    private <T> void commitText(Spinner<T> spinner) {
+        if (!spinner.isEditable()) return;
+        String text = spinner.getEditor().getText();
+        SpinnerValueFactory<T> valueFactory = spinner.getValueFactory();
+        if (valueFactory != null) {
+            StringConverter<T> converter = valueFactory.getConverter();
+            if (converter != null) {
+                T value = converter.fromString(text);
+                valueFactory.setValue(value);
+            }
+        }
+    }
 
 }

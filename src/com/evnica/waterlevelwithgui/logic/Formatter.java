@@ -18,6 +18,8 @@ public class Formatter
     private static final DateTimeFormatter DATE_FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern( "yyyy-MM-dd" );
     private static final DateTimeFormatter TIME_FORMATTER_HHmmss = DateTimeFormatter.ofPattern( "HH:mm:ss" );
     private static final DateTimeFormatter DATE_TIME_FORMATTER_ddMMyyyy_HHmm = DateTimeFormatter.ofPattern( "dd.MM.yyyy HH:mm" );
+    private static final DateTimeFormatter DATE_TIME_FORMATTER_HHmmss_ddMMyyyy = DateTimeFormatter.ofPattern( "HHmmss-ddMMyyyy" );
+
 
     static final NumberFormat NUMBER_FORMAT = new DecimalFormat( "#0.00" );
 
@@ -45,6 +47,11 @@ public class Formatter
     public static DateTimeFormatter getDATE_TIME_FORMATTER_ddMMyyyy_HHmm()
     {
         return DATE_TIME_FORMATTER_ddMMyyyy_HHmm;
+    }
+
+    public static DateTimeFormatter getDATE_TIME_FORMATTER_HHmmss_ddMMyyyy()
+    {
+        return DATE_TIME_FORMATTER_HHmmss_ddMMyyyy;
     }
 }
 

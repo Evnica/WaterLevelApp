@@ -22,10 +22,11 @@
 
 #stationNameTxt, #startTxt, #endTxt, #formatTxt, #timeFrameTxt{
     -fx-font: 18px Calibri;
-    -fx-fill: #393939;
-    -fx-stroke: #0e0c0c;
+    -fx-font-weight: bold;
+    -fx-fill: #0e0c0c;
+/*    -fx-stroke: #0e0c0c;
     -fx-stroke-width: 0.5;
-    -fx-effect: dropshadow(  three-pass-box , rgba(222, 222, 222, 0.5), 0,0,0,1 );
+    -fx-effect: dropshadow(  three-pass-box , rgba(222, 222, 222, 0.5), 0,0,0,1 );*/
 }
 
 .button{

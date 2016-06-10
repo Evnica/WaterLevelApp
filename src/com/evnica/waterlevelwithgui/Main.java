@@ -39,14 +39,20 @@ public class Main extends Application {
         {
             this.primaryStage = primaryStage;
             FXMLLoader loader = new FXMLLoader(getClass().getResource( "main.fxml" ));
-            Parent root = loader.load();
-            MainController controller =  loader.getController();
-            controller.setMainApp( this );
-            primaryStage.setTitle("Pegelberichte");
-            primaryStage.getIcons().add( new Image( Main.class.getResourceAsStream( "../../../assets/drop.png" ) ) );
-            Scene scene = new Scene(root, 560, 300);
-            scene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );
-            primaryStage.setScene(scene);
+            try
+            {
+                Parent root = loader.load();
+                MainController controller =  loader.getController();
+                controller.setMainApp( this );
+                primaryStage.setTitle("Pegelberichte");
+                primaryStage.getIcons().add( new Image( Main.class.getResourceAsStream( "../../../assets/drop.png" ) ) );
+                Scene scene = new Scene(root, 560, 300);
+                scene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );
+                primaryStage.setScene(scene);
+            } catch ( IOException e )
+            {
+                LOGGER.error( "Can't load GUI", e );
+            }
 
             dialog = new Stage( );
 
@@ -136,6 +142,8 @@ public class Main extends Application {
         info.setResizable( false );
         info.show();
     }
+
+
 
 }
 
