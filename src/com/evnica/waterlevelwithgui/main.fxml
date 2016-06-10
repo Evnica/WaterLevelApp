@@ -46,7 +46,7 @@
 
       <Button fx:id="createButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Erstellen" GridPane.rowIndex="6" />
       <Button fx:id="exitButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Schließen" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-
+       <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Löschen" GridPane.columnIndex="2" GridPane.rowIndex="6" />
       <Button fx:id="aboutButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Info..." GridPane.columnIndex="3" GridPane.rowIndex="6" />
 
       <ComboBox fx:id="stationCombo" prefWidth="450.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />

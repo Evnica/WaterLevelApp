@@ -39,7 +39,7 @@ public class MainController
     @FXML
     private Button aboutButton;
     @FXML
-    private Button optionsButton;
+    private Button deleteButton;
     @FXML
     private GridPane gridPane;
     @FXML
@@ -208,7 +208,18 @@ public class MainController
                 createAboutDialog();
             } catch ( IOException e )
             {
-                e.printStackTrace();
+                LOGGER.error( "Can't create About... dialog", e );
+            }
+
+        } );
+
+        deleteButton.addEventHandler( MouseEvent.MOUSE_CLICKED, event -> {
+            try
+            {
+                createDeleteDialog();
+            } catch ( IOException e )
+            {
+                LOGGER.error( "Can't create Delete dialog", e );
             }
 
         } );
@@ -233,6 +244,23 @@ public class MainController
         about.setTitle( "Über das Programm" );
         about.getIcons().add( new javafx.scene.image.Image( Main.class.getResourceAsStream( "../../../assets/drop.png" ) ) );
         Scene aboutScene = new Scene( dialogRoot, 450, 300 );
+        aboutScene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );
+        about.setScene( aboutScene );
+        about.setResizable( false );
+        about.show();
+    }
+
+    private void createDeleteDialog() throws IOException
+    {
+        FXMLLoader dialogLoader = new FXMLLoader(getClass().getResource( "deletedialog.fxml" ));
+        Parent dialogRoot = dialogLoader.load();
+        DeleteController deleteController = dialogLoader.getController();
+        deleteController.exitConfirm.setText( "Möchten Sie alle erstellten\nBerichte löschen?" );
+        deleteController.setMainApp( main );
+        Stage about = new Stage(  );
+        about.setTitle( "Bestätigung des Löschens" );
+        about.getIcons().add( new javafx.scene.image.Image( Main.class.getResourceAsStream( "../../../assets/drop.png" ) ) );
+        Scene aboutScene = new Scene( dialogRoot, 320, 135 );
         aboutScene.getStylesheets().add( this.getClass().getResource( "waterlevelstyle.css" ).toExternalForm() );
         about.setScene( aboutScene );
         about.setResizable( false );
